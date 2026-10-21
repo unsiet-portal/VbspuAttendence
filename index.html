@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProAttend - Modern University Portal</title>
+    <style>
+        :root {
+            --bg-base: #090d16;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --border-glow: rgba(99, 102, 241, 0.25);
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-cyan: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.12) 0%, transparent 45%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Modern Glass Navigation Bar */
+        nav {
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-box img {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+        }
+
+       .logo-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    background: var(--primary-gradient);
+    background-clip: text;          /* Yeh standard property hai jo warning hata degi */
+    -webkit-background-clip: text;  /* Safari aur Chrome ke liye prefix */
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+            
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #fff;
+            background: rgba(99, 102, 241, 0.15);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Hero Section */
+        .hero-container {
+            max-width: 1200px;
+            margin: 2.5rem auto 1.5rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+        }
+
+        .hero-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 3.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--primary-gradient);
+        }
+
+        .badge-pill {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 0.35rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+       .hero-card h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+    background-clip: text;          /* Yeh line yahan add kar dein */
+    -webkit-background-clip: text;  
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+} 
+        .hero-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem auto;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Action Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .action-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .action-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo-box">
+            <img src="logo.png" alt="VBSPU Logo" style="width: 48px; height: 52px; object-fit: contain; border-radius: 6px;">
+            <span class="logo-text">VbspuAttend Portal</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="attendance.html">Attendance</a></li>
+            <li><a href="schedule.html">Timetable</a></li>
+            <li><a href="notices.html">Notices</a></li>
+        </ul>
+    </nav>
+    <!-- Hero Section (Jisme Student aur Admin ke boxes hain) -->
+    <div class="hero-container">
+        <div class="hero-card">
+            <span class="badge-pill">⚡ Advanced Academic Management</span>
+            <h1>Next-Generation Attendance Tracking</h1>
+            <p>Seamlessly manage your theory lectures, practical labs, multi-slot daily sessions, and monitor your 75% attendance criteria with high precision.</p>
+            
+            <div class="dashboard-grid">
+                <!-- Student Card -->
+                <div class="action-card">
+                    <div class="card-icon">🎓</div>
+                    <h3>Student Portal</h3>
+                    <p>Log in with your name to mark attendance and track subject-wise performance.</p>
+                    <a href="attendance.html" style="display: block; width: 100%; text-align: center; background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); color: white; padding: 0.75rem; border-radius: 10px; text-decoration: none; font-weight: 600; margin-top: 1rem; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);">
+                        Open Attendance Dashboard
+                    </a>
+                </div>
+                <!-- Admin Card -->
+                <div class="action-card">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Admin Panel</h3>
+                    <p>Schedule multiple classes/labs per day, manage subjects, and control system logs.</p>
+                    <div style="margin-top: 2.1rem;">
+                        <button onclick="document.getElementById('admin-modal').style.display='flex'" class="btn-secondary">Admin Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Contact Info Card (Student Portal & Admin Panel ke theek neeche alag box me) -->
+    <div style="max-width: 1200px; margin: 0 auto 2.5rem auto; padding: 0 1.5rem; width: 100%;">
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 2rem; backdrop-filter: blur(20px);">
+            <div style="font-size: 2.2rem; margin-bottom: 1rem;">📞</div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #fff;">Contact Info</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Get in touch with the university administration and support desk.</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--text-muted);">
+                <div>📍 VBSPU, Jaunpur, UP, India</div>
+                <div>✉️ info@vbspu.edu.in</div>
+                <div>📞 +91 7830544207</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal Popup -->
+    <div id="admin-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(9, 13, 22, 0.85); backdrop-filter: blur(10px); z-index:2000; align-items:center; justify-content:center;">
+        <div class="action-card" style="width: 100%; max-width: 380px; margin: 1rem; border: 1px solid rgba(99, 102, 241, 0.4);">
+            <h3 style="margin-bottom: 0.5rem; color: #fff;">🔐 Admin Authentication</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Enter administrator gmail and password to access control center.</p>
+            
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="admin-modal" id="adminModal">
+                    <label>Admin Gmail</label>
+                    <input type="email" id="adminEmailInput" placeholder="admin@vbspu.ac.in" required style="width: 100%; padding: 10px; margin: 8px 0; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff;">
+                    
+                    <label style="margin-top: 10px; display: block;">Password</label>
+                    <input type="password" id="adminPasswordInput" placeholder="Enter password" required style="width: 100%; padding: 10px; margin: 8px 0; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff;">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" style="flex:1;">Login</button>
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('admin-modal').style.display='none'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2026 VbspuAttend Portal. Crafted for Modern Academic Excellence.</p>
+    </footer>
+<script type="module" src="script.js"></script>
+    <script>
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmailInput').value.trim();
+            const password = document.getElementById('adminPasswordInput').value.trim();
+
+            if (email === "admin@vbspu.ac.in" && password === "vbspu123") {
+                localStorage.setItem('smart_attendance_db', JSON.stringify({
+                    currentUser: "Admin",
+                    role: 'admin'
+                }));
+                window.location.href = 'admin.html';
+            } else {
+                alert('Invalid Admin Gmail or Password! (Use admin@vbspu.ac.in / vbspu123)');
+            }
+        }
+    </script>
+</body>
+</html>

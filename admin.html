@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProAttend - Admin Control Center</title>
+    <style>
+        :root {
+            --bg-base: #090d16;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --border-glow: rgba(99, 102, 241, 0.25);
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            background-clip: text;          
+            -webkit-background-clip: text;  
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: #818cf8;
+        }
+
+        .btn-action {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+        }
+
+        .form-group {
+            margin-bottom: 0.8rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #cbd5e1;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 9px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #6366f1;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <span class="logo-text">VbspuAttend Admin Panel</span>
+        <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+    </nav>
+
+    <div class="container">
+        <div class="admin-header">
+            <h1>Welcome, Administrator 🔐</h1>
+            <p style="color: var(--text-muted);">UNSIET / VBSPU Management Control Hub</p>
+        </div>
+
+        <!-- Top Row: System Overview & Timetable Control -->
+        <div class="dashboard-grid">
+            <!-- Quick Stats Card -->
+            <div class="card">
+                <h3>📊 System Overview</h3>
+                <p>Total Registered Attendance Logs: <strong id="totalLogsCount">0</strong></p>
+                <p style="margin-top: 0.5rem;">Active Geofence Radius: <strong id="activeRadiusDisplay">300m</strong></p>
+                <button class="btn-action" id="openGeofenceModalBtn">Configure Geofence</button>
+            </div>
+
+            <!-- Schedule & Reschedule Control -->
+            <div class="card">
+                <h3>📅 Class Schedule & Rescheduling</h3>
+                <p>Manage daily lecture slots, practical labs, and reschedule classes dynamically.</p>
+                <button class="btn-action" onclick="window.location.href='schedule.html'">Manage Timetable</button>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Publish Notice Live -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3>📢 Publish Notice Live</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Directly broadcast official circulars to the student notices portal.</p>
+            
+            <form onsubmit="adminPublishNotice(event)">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Notice Title</label>
+                        <input type="text" id="adminNoticeTitle" placeholder="e.g., Practical Exam Date" required />
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Description</label>
+                        <textarea id="adminNoticeDesc" rows="1" placeholder="Enter notice details..." required style="height: 38px;"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn-action" style="max-width: 250px; margin-top: 1rem;">Publish to Portal</button>
+            </form>
+        </div>
+
+        <!-- Student Attendance Records Table -->
+        <div class="card">
+            <h3>📝 Student Verified Attendance Records</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Branch</th>
+                            <th>Semester</th>
+                            <th>Date & Time</th>
+                            <th>Distance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminLogTable">
+                        <!-- Dynamic Records -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn-action" style="max-width: 200px; margin-top: 1.5rem;" onclick="clearLogs()">Clear All Records</button>
+        </div>
+    </div>
+
+    <!-- Geofence Configuration Modal -->
+    <div id="geofenceModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: #1e293b; color: #f8fafc; padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <h3 style="margin-bottom: 15px; font-size: 1.2rem; color: #818cf8;">📍 Dynamic Geofence Control</h3>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">Class shift hone par yahan se radius expand karein taaki students alternate venue se attendance laga sakein.</p>
+            
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 5px;">Allowed Radius Limit (in Meters)</label>
+                <input type="number" id="newRadius" value="300" style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff;" />
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="font-size: 0.8rem; color: #cbd5e1; display: block; margin-bottom: 5px;">Reason / Venue Update Note</label>
+                <input type="text" id="shiftReason" placeholder="e.g., Shifted to Seminar Hall / Lab 2" style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff;" />
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="saveGeofenceConfig()" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #6366f1, #ec4899); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Update Live Range</button>
+                <button onclick="closeGeofenceModal()" style="padding: 10px 15px; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Script Integration -->
+    <script type="module" src="script.js"></script>
+    <script>
+        function loadAdminData() {
+            const logs = JSON.parse(localStorage.getItem("unsiet_attendance_db") || "[]");
+            document.getElementById("totalLogsCount").innerText = logs.length;
+            
+            // Show current active radius in system overview
+            const currentRadius = localStorage.getItem("unsiet_dynamic_radius") || "300";
+            document.getElementById("activeRadiusDisplay").innerText = currentRadius + "m";
+            document.getElementById("newRadius").value = currentRadius;
+
+            const tbody = document.getElementById("adminLogTable");
+            tbody.innerHTML = "";
+
+            if (logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No attendance records found.</td></tr>`;
+                return;
+            }
+
+            logs.forEach(l => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${l.roll}</strong></td>
+                    <td>${l.name}</td>
+                    <td>${l.branch}</td>
+                    <td>${l.semester}</td>
+                    <td>${l.date} ${l.time}</td>
+                    <td>${l.distance}m</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Geofence Modal Trigger Logic
+        const geoModal = document.getElementById("geofenceModal");
+        document.getElementById("openGeofenceModalBtn").addEventListener("click", () => {
+            geoModal.style.display = "flex";
+        });
+
+        function closeGeofenceModal() {
+            geoModal.style.display = "none";
+        }
+
+        function saveGeofenceConfig() {
+            const radius = document.getElementById("newRadius").value;
+            const reason = document.getElementById("shiftReason").value;
+
+            if (!radius || radius <= 0) {
+                alert("Please enter a valid radius limit.");
+                return;
+            }
+
+            localStorage.setItem("unsiet_dynamic_radius", radius);
+            localStorage.setItem("unsiet_shift_reason", reason);
+
+            alert(`Geofence successfully updated to ${radius} meters! Students can now mark attendance from the alternate venue.`);
+            geoModal.style.display = "none";
+            loadAdminData();
+        }
+
+        async function adminPublishNotice(e) {
+            e.preventDefault();
+            const title = document.getElementById('adminNoticeTitle').value.trim();
+            const desc = document.getElementById('adminNoticeDesc').value.trim();
+            
+            // Firebase Cloud Sync integration added
+            if (window.publishNoticeToCloud) {
+                await window.publishNoticeToCloud(title, desc);
+            }
+
+            const now = new Date();
+            const dateStr = `📅 Posted by Admin: ${now.toLocaleDateString('en-GB')} at ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+
+            let notices = JSON.parse(localStorage.getItem('unsiet_notices_db') || "[]");
+            notices.unshift({
+                title: title,
+                desc: desc,
+                date: dateStr
+            });
+
+            localStorage.setItem('unsiet_notices_db', JSON.stringify(notices));
+
+            document.getElementById('adminNoticeTitle').value = '';
+            document.getElementById('adminNoticeDesc').value = '';
+            alert('Notice published successfully! It is now live on the student notices portal.');
+        }
+
+        function clearLogs() {
+            if (confirm("Are you sure you want to delete all attendance records?")) {
+                localStorage.removeItem("unsiet_attendance_db");
+                loadAdminData();
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('smart_attendance_db');
+            window.location.href = 'index.html';
+        }
+
+        window.addEventListener("DOMContentLoaded", loadAdminData);
+    </script>
+</body>
+</html>
